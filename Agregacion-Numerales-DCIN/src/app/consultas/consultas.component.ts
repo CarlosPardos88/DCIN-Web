@@ -17,6 +17,10 @@ import { CryptoService } from 'src/services/crypto.services';
 import { ConsultaagregacionService, Consulta, IConsulta } from './services/consultaagregacion.service';
 import { IconOptions } from '@angular/material/icon';
 
+
+
+import { ActivatedRoute, Router } from '@angular/router';
+
 @Component({
   selector: 'qs-consultas',
   templateUrl: './consultas.component.html',
@@ -46,16 +50,31 @@ export class ConsultasComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     public media: TdMediaService,
     private _cryptoService: CryptoService,
-    private _ConsultaService: ConsultaagregacionService
+    private _ConsultaService: ConsultaagregacionService,
+    private _route: ActivatedRoute,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
-    this._titleService.setTitle('Consultas');
-    this.filterEntity = new Consulta();
-    this.filterType = MatTableFilter.ANYWHERE;
-    this.load();
-  }
-
+    
+      //let usuario = "";
+      try {
+        if (sessionStorage.getItem('User')) {
+          this._titleService.setTitle('Consultas');
+          this.filterEntity = new Consulta();
+          this.filterType = MatTableFilter.ANYWHERE;
+          this.load();
+        }  else 
+        {
+        this._router.navigate(['frmlogin']);
+        }
+      }
+       catch (error) {
+        this._router.navigate(['error']);
+    }
+ 
+}
+  
   async load(): Promise<void> {
     try {
       this._loadingService.register('consultas.list');
@@ -63,7 +82,9 @@ export class ConsultasComponent implements OnInit {
       this.consultas = await this._ConsultaService.getConsultaAgregacion().toPromise();
       
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      this._dialogService.openAlert({ message: 'Ocurrió un error Ingresando:' + error, closeButton: 'Aceptar' });
+    
     } finally {
       this.filteredConsultas = Object.assign([], this.consultas);
       this.dataSource = new MatTableDataSource(this.filteredConsultas);
