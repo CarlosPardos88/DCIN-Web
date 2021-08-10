@@ -6,6 +6,8 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { FrmloginComponent } from './frmlogin/frmlogin.component';
 import { ErrorComponent } from './error/error.component';
+//import { ConsultasComponent } from './consultas/consultas.component';
+//import { EstructuraComponent } from './estructura/estructura.component';
 
 const routes: Routes = [
   {
@@ -34,10 +36,12 @@ const routes: Routes = [
         path: 'error',
       },
       {
+        //component: EstructuraComponent,// validar linea
         path: 'estructura',
         loadChildren: () => import('./estructura/estructura.module').then(m => m.EstructuraModule)
       },
       {
+       // component: ConsultasComponent, // Validar linea
         path: 'consultas',
         loadChildren: () => import('./consultas/consultas.module').then(m => m.ConsultasModule)
       },

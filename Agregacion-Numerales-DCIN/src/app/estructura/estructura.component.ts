@@ -15,6 +15,9 @@ import { EstructuraService, Estructura, IEstructura } from './services/estructur
 import { MatTableDataSource } from '@angular/material/table';
 import { CryptoService } from 'src/services/crypto.services';
 
+
+import { ActivatedRoute, Router } from '@angular/router';
+
 @Component({
   selector: 'qs-estructura',
   templateUrl: './estructura.component.html',
@@ -46,14 +49,27 @@ export class EstructuraComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     public media: TdMediaService,
     private _cryptoService: CryptoService,
+    private _route: ActivatedRoute,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
-    this._titleService.setTitle('Estructuras');
-    this.filterEntity = new Estructura();
-    this.filterType = MatTableFilter.ANYWHERE;
-    this.load();
-  }
+
+      try {
+        if (sessionStorage.getItem('User')) {
+          this._titleService.setTitle('Estructuras');
+          this.filterEntity = new Estructura();
+          this.filterType = MatTableFilter.ANYWHERE;
+          this.load();
+      }  else 
+      {
+      this._router.navigate(['frmlogin']);
+      }
+    }
+    catch (error) {
+      this._router.navigate(['error']);
+    }
+}
 
   async load(): Promise<void> {
     try {
@@ -62,7 +78,9 @@ export class EstructuraComponent implements OnInit {
       this.estructuras = await this._estructuraService.getEstructuras().toPromise();
       
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      this._dialogService.openAlert({ message: 'Ocurrió un error Ingresando:' + error, closeButton: 'Aceptar' });
+    
     } finally {
       this.filteredEstructuras = Object.assign([], this.estructuras);
       this.dataSource = new MatTableDataSource(this.filteredEstructuras);
@@ -141,7 +159,7 @@ export class EstructuraComponent implements OnInit {
         this._dialogService.openAlert({ message: 'Ocurrió un error eliminando la estructura: Usuario No autorizado', closeButton: 'Aceptar' });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       this._dialogService.openAlert({ message: 'Ocurrió un error eliminando la estructura:' + error, closeButton: 'Aceptar' });
     } finally {
       this._loadingService.resolve('estructuras.list');
