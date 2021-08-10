@@ -59,7 +59,6 @@ import { NUMERALES_API, NUMERALES_PROVIDER} from  './services/numeralcambiario.s
 import { ErrorComponent } from './error/error.component';
 import { FrmloginComponent } from './frmlogin/frmlogin.component';
 
-import { EstructuraComponent } from './estructura/estructura.component';
 
 
 const httpInterceptorProviders: Type<ITdHttpInterceptor>[] = [
